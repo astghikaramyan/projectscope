@@ -25,7 +25,8 @@ public class ProjectEntity {
     @Column(name = "project_id")
     private Integer projectId;
 
-    private String name;
+    @Column(name = "project_name")
+    private String projectName;
 
     private LocalDate date;
 
@@ -34,27 +35,26 @@ public class ProjectEntity {
     @ManyToMany(mappedBy = "projectEntities")
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @JsonIgnore
-    Set<UserEntity> userEntities;
+    private Set<UserEntity> userEntities;
 
-    //    @OneToMany(
-//            mappedBy = "projectEntity",
-//            cascade = CascadeType.ALL,
-//            fetch = FetchType.LAZY,
-//            orphanRemoval = true
-//    )
-//    @Fetch(FetchMode.SELECT)
+
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "projectEntity")
+    @OneToMany(cascade = CascadeType.ALL,
+            orphanRemoval = true,
+//            fetch = FetchType.EAGER,
+            mappedBy = "projectEntity")
+    @Fetch(FetchMode.SELECT)
+
 //    @OneToMany(mappedBy = "projectEntity")
-            Set<LogEntity> logEntities;
+    private Set<LogEntity> logEntities;
 
 
     @Override
     public String toString() {
         return "ProjectEntity{" +
                 "projectId=" + projectId +
-                ", name='" + name + '\'' +
+                ", name='" + projectName + '\'' +
                 ", date=" + date +
                 ", deadline=" + deadline +
                 '}';
@@ -66,13 +66,13 @@ public class ProjectEntity {
         if (!(o instanceof ProjectEntity)) return false;
         ProjectEntity that = (ProjectEntity) o;
         return projectId.equals(that.projectId) &&
-                name.equals(that.name) &&
+                projectName.equals(that.projectName) &&
                 date.equals(that.date) &&
                 deadline.equals(that.deadline);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(projectId, name, date, deadline);
+        return Objects.hash(projectId, projectName, date, deadline);
     }
 }

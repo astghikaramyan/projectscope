@@ -22,7 +22,7 @@ public class UserDto {
     private Integer userId;
 
     @NotBlank(message = "Name cannot be missing or empty.")
-    private String name;
+    private String userName;
 
     private String surname;
 

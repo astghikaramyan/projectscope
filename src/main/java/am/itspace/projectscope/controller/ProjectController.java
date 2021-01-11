@@ -36,7 +36,7 @@ public class ProjectController {
                                                  @PathVariable String usersIds, @RequestParam String date, @RequestParam String deadline, @RequestParam Integer leaderId) {
         Optional<UserEntity> userEntityL = userService.getById(leaderId);
         if (!userEntityL.isPresent()) {
-            throw new ConflictException("User with Laeder role can add project. ");
+            throw new ConflictException("Only  users with leader role can add project. ");
         }
         ProjectEntity projectEntity = this.projectMapper.toEntity(projectDto);
         String[] d = date.split("/");
@@ -71,7 +71,8 @@ public class ProjectController {
         return ResponseEntity.ok(projectMapper.toDto(projectEntity));
     }
 
-    //I  check this method correct work.
+
+    @Transactional
     @DeleteMapping("/{projectId}/type")
     public ResponseEntity<?> deleteProject(@PathVariable Integer projectId, @RequestParam Integer leaderId) {
         Optional<UserEntity> userEntity = userService.getById(leaderId);
@@ -83,7 +84,7 @@ public class ProjectController {
         }
     }
 
-    //I should check this method correct work.
+
     @GetMapping("/{userId}")
     public ResponseEntity<List<ProjectDto>> getAllByUserId(@PathVariable Integer userId) {
         List<ProjectEntity> projectEntities = this.userService.getUserProjects(userId);
@@ -93,11 +94,17 @@ public class ProjectController {
         return ResponseEntity.notFound().build();
     }
 
+    @Transactional
     @DeleteMapping("/{projectIds}")
-    public ResponseEntity<?> deleteAllByIds(@PathVariable List projectIds, @RequestParam Integer userId) {
-        Optional<UserEntity> userEntity = userService.getById(userId);
+    public ResponseEntity<?> deleteAllByIds(@PathVariable String projectIds, @RequestParam Integer leaderId) {
+        Optional<UserEntity> userEntity = userService.getById(leaderId);
         if (userEntity.isPresent() && userEntity.get().getType() == Type.LEADER) {
-            projectService.deleteAll(projectIds);
+            String[] prIds = projectIds.split(",");
+            List<Integer> list = new LinkedList<>();
+            for(String e : prIds){
+                list.add(Integer.valueOf(e));
+            }
+            projectService.deleteAll(list);
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.notFound().build();

@@ -66,9 +66,9 @@ public class LogController {
             if (!logEntitySet.isEmpty()) {
                 set.addAll(logEntitySet);
                 userEntity.get().getLogEntities().clear();
-                userEntity.get().setLogEntities(set);
+                userEntity.get().getLogEntities().addAll(set);
             } else {
-                userEntity.get().setLogEntities(set);
+                userEntity.get().getLogEntities().addAll(set);
             }
         }
         if (projectEntity.isPresent()) {
@@ -78,9 +78,9 @@ public class LogController {
             if (!projectLogs.isEmpty()) {
                 logEntities.addAll(projectLogs);
                 projectEntity.get().getLogEntities().clear();
-                projectEntity.get().setLogEntities(logEntities);
+                projectEntity.get().getLogEntities().addAll(logEntities);
             } else {
-                projectEntity.get().setLogEntities(logEntities);
+                projectEntity.get().getLogEntities().addAll(logEntities);
             }
         }
         return ResponseEntity.ok(logMapper.toDto(logEntity));
@@ -117,3 +117,4 @@ public class LogController {
         return ResponseEntity.notFound().build();
     }
 }
+//https://codippa.com/how-to-resolve-a-collection-with-cascadeall-delete-orphan-was-no-longer-referenced-by-the-owning-entity-instance/

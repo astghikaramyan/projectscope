@@ -25,7 +25,8 @@ public class UserEntity {
     @Column(name = "user_id")
     private Integer userId;
 
-    private String name;
+    @Column(name = "user_name")
+    private String userName;
 
     private String surname;
 
@@ -49,16 +50,14 @@ public class UserEntity {
     @JsonIgnore
     private Set<ProjectEntity> projectEntities;
 
-    //    @OneToMany(
-//            mappedBy = "userEntity",
-//            cascade = CascadeType.ALL,
-//            fetch = FetchType.LAZY,
-//            orphanRemoval = true
-//    )
-//    @Fetch(FetchMode.SELECT)
+
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "userEntity")
+    @OneToMany(cascade = CascadeType.ALL,
+            orphanRemoval = true,
+//            fetch = FetchType.EAGER,
+            mappedBy = "userEntity")
+    @Fetch(FetchMode.SELECT)
 //    @OneToMany(mappedBy = "userEntity")
     private Set<LogEntity> logEntities;
 
@@ -82,7 +81,7 @@ public class UserEntity {
     public String toString() {
         return "UserEntity{" +
                 "userId=" + userId +
-                ", name='" + name + '\'' +
+                ", name='" + userName + '\'' +
                 ", surname='" + surname + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +

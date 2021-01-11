@@ -142,7 +142,7 @@ public class UserServiceImpl implements UserService {
         List<ProjectEntity> list2 = new LinkedList<>();
         if (!list.isEmpty()) {
             for (ProjectEntity p : list) {
-                if (p.getName().equals(name)) {
+                if (p.getProjectName().equals(name)) {
                     list2.add(p);
                 }
             }
@@ -156,13 +156,13 @@ public class UserServiceImpl implements UserService {
         List<Project> list1 = new LinkedList<>();
         for (ProjectEntity p : list) {
             Project project = new Project();
-            project.setProjectName(p.getName());
+            project.setProjectName(p.getProjectName());
             project.setDate(p.getDate());
             project.setDeadline(p.getDeadline());
             StringJoiner stringJoiner = new StringJoiner(",");
             Set<UserEntity> userEntities = p.getUserEntities();
             for (UserEntity u : userEntities) {
-                stringJoiner.add(u.getName());
+                stringJoiner.add(u.getUserName());
             }
             project.setMembers(stringJoiner.toString());
             Set<LogEntity> logEntities = p.getLogEntities();

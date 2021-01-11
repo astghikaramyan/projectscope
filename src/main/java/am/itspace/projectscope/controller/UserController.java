@@ -102,11 +102,10 @@ public class UserController {
         return ResponseEntity.notFound().build();
     }
 
-    //I should check this method correct work.
     @GetMapping("/{userId}/filteredByDate")
     public ResponseEntity<List<Project>> getProjectsFilteredByDate(@PathVariable Integer userId, @RequestParam String dateFrom, @RequestParam String dateTo) {
         String[] dateFromArray = dateFrom.split("/");
-        String[] dateToArray = dateFrom.split("/");
+        String[] dateToArray = dateTo.split("/");
         LocalDate dateF = LocalDate.of(Integer.valueOf(dateFromArray[2]), Integer.valueOf(dateFromArray[1]), Integer.valueOf(dateFromArray[0]));
         LocalDate dateT = LocalDate.of(Integer.valueOf(dateToArray[2]), Integer.valueOf(dateToArray[1]), Integer.valueOf(dateToArray[0]));
         List<Project> projects = userService.getProjectsFilteredInfo(userId, dateF, dateT);
@@ -116,7 +115,6 @@ public class UserController {
         return ResponseEntity.notFound().build();
     }
 
-    //I should check this method correct work.
     @GetMapping("/{userId}/filteredByName")
     public ResponseEntity<List<Project>> getProjectsInfo(@PathVariable Integer userId, @RequestParam String name) {
         List<Project> projects = userService.getProjectsFilteredInfoByName(userId, name);

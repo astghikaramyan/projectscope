@@ -1,5 +1,6 @@
 package am.itspace.projectscope.service.serviceimpl;
 
+import am.itspace.projectscope.entity.LogEntity;
 import am.itspace.projectscope.entity.ProjectEntity;
 import am.itspace.projectscope.entity.UserEntity;
 import am.itspace.projectscope.repo.ProjectRepo;
@@ -45,7 +46,24 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public void delete(Integer id) {
-        if (projectRepo.findById(id).isPresent()) {
+        Optional<ProjectEntity> projectEntity = projectRepo.findById(id);
+        if (projectEntity.isPresent()) {
+            Set<UserEntity> userEntities = new HashSet<>();
+            Set<LogEntity> logEntities = new HashSet<>();
+            userEntities.addAll(projectEntity.get().getUserEntities());
+            logEntities.addAll(projectEntity.get().getLogEntities());
+            projectEntity.get().getLogEntities().clear();
+            projectEntity.get().getUserEntities().clear();
+            if(userEntities != null){
+                for(UserEntity u : userEntities){
+                    Set<ProjectEntity> set = new HashSet<>();
+                    Set<ProjectEntity> set1 = u.getProjectEntities();
+                    set1.remove(projectEntity.get());
+                    set.addAll(set1);
+                    u.getProjectEntities().clear();
+                    u.getProjectEntities().addAll(set);
+                }
+            }
             projectRepo.deleteById(id);
         }
     }
