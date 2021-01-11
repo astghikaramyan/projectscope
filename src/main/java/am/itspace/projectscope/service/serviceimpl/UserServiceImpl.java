@@ -3,6 +3,7 @@ package am.itspace.projectscope.service.serviceimpl;
 import am.itspace.projectscope.entity.LogEntity;
 import am.itspace.projectscope.entity.ProjectEntity;
 import am.itspace.projectscope.entity.UserEntity;
+import am.itspace.projectscope.exceptions.ConflictException;
 import am.itspace.projectscope.model.Type;
 import am.itspace.projectscope.repo.ProjectRepo;
 import am.itspace.projectscope.repo.UserRepo;
@@ -42,9 +43,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserEntity save(UserEntity userEntity) {
-
-        if (userEntity != null)
+        if (userEntity != null){
+            if (existsByEmail(userEntity.getEmail())) {
+                throw new ConflictException("Email address already taken");
+            }
+            if (existsByPassword(userEntity.getPassword())) {
+                throw new ConflictException("Password already in use ");
+            }
             return userRepo.save(userEntity);
+        }
         return null;
     }
 

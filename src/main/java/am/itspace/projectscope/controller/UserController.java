@@ -40,14 +40,6 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<UserDto> addUser(@Valid @RequestBody UserDto userDto) {
         UserEntity userEntity = this.userMapper.toEntity(userDto);
-        if (userService.existsByEmail(userEntity.getEmail())) {
-            logger.warn("User with {} email already exists.", userDto.getEmail());
-            throw new ConflictException("Email address already taken");
-        }
-        if (userService.existsByPassword(userEntity.getPassword())) {
-            logger.warn("User with {} password already exists.", userDto.getPassword());
-            throw new ConflictException("Password already in use ");
-        }
         userEntity.setPassword(EncriptionUtil.encrypt(userDto.getPassword()));
         userEntity = this.userService.save(userEntity);
         if (userEntity != null) {
