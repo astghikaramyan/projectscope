@@ -163,6 +163,7 @@ public class UserServiceImpl implements UserService {
         List<Project> list1 = new LinkedList<>();
         for (ProjectEntity p : list) {
             Project project = new Project();
+            project.setProjectId(p.getProjectId());
             project.setProjectName(p.getProjectName());
             project.setDate(p.getDate());
             project.setDeadline(p.getDeadline());

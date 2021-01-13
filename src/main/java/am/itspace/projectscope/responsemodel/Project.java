@@ -10,6 +10,7 @@ import java.time.LocalDate;
 @EqualsAndHashCode
 @NoArgsConstructor
 public class Project {
+    private Integer projectId;
     private String projectName;
     private LocalDate date;
     private LocalDate deadline;
