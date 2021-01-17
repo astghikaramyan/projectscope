@@ -10,21 +10,29 @@ import am.itspace.projectscope.model.Type;
 import am.itspace.projectscope.responsemodel.Project;
 import am.itspace.projectscope.service.UserService;
 import am.itspace.projectscope.util.EncriptionUtil;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-@CrossOrigin("*")
+@CrossOrigin(origins = "http://localhost:4200", allowedHeaders = "*")
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
@@ -47,6 +55,42 @@ public class UserController {
             return ResponseEntity.ok(userMapper.toDto(userEntity));
         }
         return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @PostMapping("/upload/{userId}")
+    public ResponseEntity<?> addUserImage(@PathVariable Integer userId, @RequestParam("uploadFile") MultipartFile file) throws IOException {
+
+        Optional<UserEntity> user1 = userService.getById(userId);
+        if (user1.isPresent()) {
+            String name = "";
+            if (file.getOriginalFilename().equals("") || file.getOriginalFilename().length() == 0) {
+                name = "download.png";
+            } else {
+                name = user1.get().getUserId() + "_userId.jpg";
+            }
+            File image = new File("C:\\Users\\User\\Desktop\\projectscope\\upload", name);
+            file.transferTo(image);
+            user1.get().setProfilePicture(name);
+            userService.updateUser(user1.get());
+            return ResponseEntity.ok().build();
+        }
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @GetMapping(value = "/image", produces = MediaType.IMAGE_JPEG_VALUE)
+    public ResponseEntity<byte[]> getImage(@RequestParam("imageName") String imageName) throws IOException {
+        InputStream in = new FileInputStream("C:\\Users\\User\\Desktop\\projectscope\\upload" + File.separator + imageName);
+        return ResponseEntity.ok(IOUtils.toByteArray(in));
+    }
+
+
+    @GetMapping(value = "/_search")
+    public ResponseEntity<UserDto> getUserById(@RequestParam("id") Integer id){
+        Optional<UserEntity> user = this.userService.getById(id);
+        if(user.isPresent()){
+            return ResponseEntity.ok(userMapper.toDto(user.get()));
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @GetMapping("/login")
@@ -116,3 +160,7 @@ public class UserController {
         return ResponseEntity.notFound().build();
     }
 }
+
+
+//https://www.javatpoint.com/angular-spring-file-upload-example
+//https://medium.com/linkit-intecs/file-upload-download-as-multipart-file-using-angular-6-spring-boot-7ad06d841c21

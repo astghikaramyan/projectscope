@@ -4,6 +4,7 @@ import am.itspace.projectscope.entity.ProjectEntity;
 import am.itspace.projectscope.entity.UserEntity;
 import am.itspace.projectscope.model.Type;
 import am.itspace.projectscope.responsemodel.Project;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -37,4 +38,6 @@ public interface UserService {
     List<Project> getProjectsFilteredInfoByName(Integer userId, String name);
 
     List<Project> getProjectsByUserId(Integer userId);
+
+    void storeUserProfilePicture(MultipartFile file , Integer userId);
 }

@@ -12,6 +12,7 @@ import am.itspace.projectscope.service.UserService;
 import am.itspace.projectscope.util.EncriptionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -184,5 +185,8 @@ public class UserServiceImpl implements UserService {
         return list1;
     }
 
+    @Override
+    public void storeUserProfilePicture(MultipartFile file, Integer userId) {
 
+    }
 }

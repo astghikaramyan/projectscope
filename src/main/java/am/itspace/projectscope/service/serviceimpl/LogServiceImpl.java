@@ -1,6 +1,7 @@
 package am.itspace.projectscope.service.serviceimpl;
 
 import am.itspace.projectscope.entity.LogEntity;
+import am.itspace.projectscope.entity.UserEntity;
 import am.itspace.projectscope.repo.LogRepo;
 import am.itspace.projectscope.service.LogService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,14 @@ public class LogServiceImpl implements LogService {
     public LogEntity updateLog(LogEntity logEntity) {
         if (logRepo.findById(logEntity.getLogId()).isPresent())
             return logRepo.save(logEntity);
+        return null;
+    }
+
+    @Override
+    public List<LogEntity> findAllByUserId(UserEntity userEntity) {
+        if(userEntity != null){
+            return this.logRepo.findAllByUserEntity(userEntity);
+        }
         return null;
     }
 }

@@ -9,14 +9,13 @@ import am.itspace.projectscope.service.LogService;
 import am.itspace.projectscope.service.ProjectService;
 import am.itspace.projectscope.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @CrossOrigin("*")
 @RestController
@@ -116,5 +115,20 @@ public class LogController {
         }
         return ResponseEntity.notFound().build();
     }
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<List<LogDto>> findAllByUserEntity(@PathVariable Integer userId){
+        Optional<UserEntity> u = userService.getById(userId);
+        if(u.isPresent()){
+            List<LogEntity>  l = this.logService.findAllByUserId(u.get());
+            if(l != null){
+                return ResponseEntity.ok(this.logMapper.toDtoList(l));
+            }
+            return ResponseEntity.notFound().build();
+        }
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+     }
+
+
 }
 //https://codippa.com/how-to-resolve-a-collection-with-cascadeall-delete-orphan-was-no-longer-referenced-by-the-owning-entity-instance/
